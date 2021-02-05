@@ -20,44 +20,58 @@ RUN apt-get update && apt-get -y upgrade &&\
 			   libssl-dev libreadline-dev libffi-dev wget unzip
 
 
+##############################
+######  INSTALL ANGR  ########
+##############################
 ARG DEBIAN_FRONTEND=noninteractive
 ARG BRANCH=master
-RUN apt-get install -y python3-dev virtualenvwrapper python3-pip python3-venv
-RUN python3 -m venv angr
-RUN pip3 install angr
+RUN apt-get install -y python3-dev virtualenvwrapper python3-pip python3-venv \
+	&& pip3 install angr tqdm
 
-### Install KLEE ######
-COPY klee-install.sh .
-RUN chmod +x klee-install.sh
-RUN ./klee-install.sh
-
+############################
+######  INSTALL KLEE  ######
+############################
+COPY klee-install.sh /root
+RUN cd /root \
+	&& chmod +x klee-install.sh \
+	&& ./klee-install.sh
 
 ###################################
 ######  DOWNLOAD EVOSUITE  ########
 ###################################
-RUN wget https://github.com/EvoSuite/evosuite/releases/download/v1.1.0/evosuite-standalone-runtime-1.1.0.jar
+RUN cd /root \
+	&& wget https://github.com/EvoSuite/evosuite/releases/download/v1.1.0/evosuite-standalone-runtime-1.1.0.jar
 
 ###################################
 ######   DOWNLOAD ASTOR    ########
 ###################################
-RUN git clone https://github.com/SpoonLabs/astor.git
-RUN cd astor && mvn install -DskipTests=true && mvn package -DskipTests=true 
+RUN cd /root \
+	&& git clone https://github.com/SpoonLabs/astor.git \
+	&& cd astor && mvn install -DskipTests=true && mvn package -DskipTests=true 
 
 #############################################
 ######   DOWNLOAD ASSIGNMENT CODE    ########
 #############################################
-RUN git clone https://github.com/apanichella/JavaInstrumentation.git
-RUN cd JavaInstrumentation && mvn clean package
+RUN cd /root \
+	&& git clone https://github.com/apanichella/JavaInstrumentation.git \
+	&& cd JavaInstrumentation \
+	&& mvn clean package
 
 ###############################################################
 ######   DOWNLOAD RERS LTL AND REACHABILITY PROBLEMS   ########
 ###############################################################
-RUN mkdir RERS
-RUN cd RERS && wget http://rers-challenge.org/2020/problems/sequential/SeqReachabilityRers2020.zip \
-	        && wget http://rers-challenge.org/2020/problems/sequential/SeqLtlRers2020.zip \
-	        && unzip SeqReachabilityRers2020.zip && unzip SeqLtlRers2020.zip \
-	        && rm SeqReachabilityRers2020.zip && rm SeqLtlRers2020.zip
+RUN cd /root \
+	&& mkdir RERS \
+	&& cd RERS \
+	&& wget http://rers-challenge.org/2020/problems/sequential/SeqReachabilityRers2020.zip \
+	&& wget http://rers-challenge.org/2020/problems/sequential/SeqLtlRers2020.zip \
+	&& unzip SeqReachabilityRers2020.zip && unzip SeqLtlRers2020.zip \
+	&& rm SeqReachabilityRers2020.zip && rm SeqLtlRers2020.zip	
 
 
+### Copy stuff to /home/str for easier access as volume
+RUN mkdir /home/str \
+	&& cp -r /root/* /home/str \
+	&& chmod -R a+rwx /home/str
 
 
