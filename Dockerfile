@@ -68,6 +68,18 @@ RUN cd /root \
 	&& unzip SeqReachabilityRers2020.zip && unzip SeqLtlRers2020.zip \
 	&& rm SeqReachabilityRers2020.zip && rm SeqLtlRers2020.zip	
 
+#############################################
+######   DOWNLOAD AND INSTALL AFL   #########
+#############################################
+RUN cd /root \
+	&& mkdir AFL \
+	&& cd AFL \
+	&& wget https://lcamtuf.coredump.cx/afl/releases/afl-latest.tgz \
+	&& tar -xvzf afl-latest.tgz\
+	&& cd afl-2.52b && make -j `nproc` \
+	&& cd .. && rm afl-latest.tgz
+
+
 
 ### Copy stuff to /home/str for easier access as volume
 RUN mkdir /home/str \
