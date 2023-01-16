@@ -84,4 +84,4 @@ RUN mkdir /home/str \
 	&& mv /root/* /home/str \
 	&& chmod -R a+rwx /home/str
 
-
+ENTRYPOINT ["/bin/bash"]
