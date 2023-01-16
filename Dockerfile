@@ -79,11 +79,9 @@ RUN cd /root \
 	&& cd afl-2.52b && make -j `nproc` \
 	&& cd .. && rm afl-latest.tgz
 
-
-
-### Copy stuff to /home/str for easier access as volume
+### Move the folders to /home/str for easier access as volume
 RUN mkdir /home/str \
-	&& cp -r /root/* /home/str \
+	&& mv /root/* /home/str \
 	&& chmod -R a+rwx /home/str
 
 

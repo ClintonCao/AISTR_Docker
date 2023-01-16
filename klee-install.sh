@@ -16,7 +16,7 @@ apt-get install -y build-essential curl libcap-dev git \
 
 pip3 install tabulate
 
-#### Install LLVM 6.0#####
+#### Install LLVM 11.0 #####
 apt-get install -y clang-6.0 llvm-6.0 llvm-6.0-dev llvm-6.0-tools
 
 ##### Install Solvers (STP and Z3) ####
@@ -31,7 +31,7 @@ cd ../..
 
 # Z3
 git clone https://github.com/Z3Prover/z3.git
-cd z3 && python scripts/mk_make.py --java && cd build && make -j `nproc` &&  make -j `nproc` install 
+cd z3 && git checkout tags/z3-4.8.10 && python scripts/mk_make.py --java && cd build && make -j `nproc` &&  make -j `nproc` install 
 
 cd ../..
 
